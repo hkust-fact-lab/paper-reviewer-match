@@ -1,82 +1,89 @@
 # ReviewMatch
 
-ISCA 审稿人匹配系统 — 用大模型辅助论文与审稿人匹配和分配。
+**ISCA 2027 审稿人匹配系统** — 用大模型辅助论文与审稿人匹配和分配。
+
+## 演示视频
+
+<video src="https://github.com/hkust-fact-lab/paper-reviewer-match/releases/download/v0.1.0/ReviewMatch-Pre.mov" controls width="100%"></video>
+
+> 如果视频无法内嵌播放，[点击直接下载观看](https://github.com/hkust-fact-lab/paper-reviewer-match/releases/download/v0.1.0/ReviewMatch-Pre.mov)
+
+## 功能
+
+1. **分析论文** — 用大模型读取 PDF，提取研究主题、方法、所需审稿专业知识
+2. **分析审稿人** — 从 Semantic Scholar 抓取 PC 成员论文，建立研究专长画像
+3. **计算匹配分数** — 三维加权（话题 50% + 方法 30% + 时近度 20%），生成 0-100 分和自然语言理由
+4. **生成完整分配** — 满足每篇篇数、每人上限、利益冲突等约束，可配置
+5. **可操作界面** — 导入、查看推荐、运行分配、人工调整、导出
 
 ## 快速启动
 
-### 后端
+### 依赖
+
+- Python 3.12+
+- Node.js 18+
+
+### 安装
 
 ```sh
+git clone https://github.com/hkust-fact-lab/paper-reviewer-match.git
 cd paper-reviewer-match
+
+# 后端
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r backend/requirements.txt
-cp .env.example .env   # 填写 HotCRP OAuth 参数
-uvicorn backend.main:app --reload --port 8000
+
+# 前端
+cd frontend && npm install && npm run build && cd ..
 ```
 
-### 前端（开发）
+### 配置
 
 ```sh
-cd frontend
-npm install
-npm run dev   # http://localhost:5173，API 代理到 :8000
+cp .env.example .env
+# 编辑 .env，填写 ADMIN_PASSWORD 和 LLM_API_KEY
 ```
 
-### 前端（生产构建）
+### 启动
 
 ```sh
-cd frontend && npm run build
-# 再启动后端，访问 http://localhost:8000
+./dev.sh
 ```
 
-## 项目结构
+浏览器打开 `http://localhost:8000`，默认账号 `admin` / `admin123`。
+
+### 插入演示数据
+
+```sh
+source .venv/bin/activate
+python scripts/seed_demo.py
+```
+
+插入 12 篇 ISCA 论文、12 位真实 PC 成员、30 条匹配分数和 24 对分配结果。
+
+## 技术栈
+
+| 层 | 技术 |
+|----|------|
+| 前端 | React 19 · Vite · TanStack Router · Tailwind CSS v4 |
+| 后端 | Python · FastAPI · SQLite |
+| 大模型 | OpenAI-compatible API（支持 Claude、GPT、Qwen 等） |
+| 数据来源 | Semantic Scholar API · Google Scholar |
+
+## 目录
 
 ```
 paper-reviewer-match/
 ├── backend/
-│   ├── main.py              # FastAPI 入口
-│   ├── requirements.txt
-│   ├── models/
-│   │   ├── db.py            # SQLite 连接 + 建表
-│   │   └── schemas.py       # Pydantic 请求/响应模型
-│   ├── routers/
-│   │   ├── auth.py          # HotCRP OAuth 认证
-│   │   ├── papers.py        # 论文管理
-│   │   ├── reviewers.py     # Reviewer 管理
-│   │   ├── matches.py       # 匹配分数
-│   │   ├── assignment.py    # 分配配置、运行、导出
-│   │   ├── conflicts.py     # COI 管理
-│   │   └── tasks.py         # 异步任务状态
-│   └── services/
-│       ├── analysis.py      # 论文分析（LLM）
-│       ├── scholar.py       # Google Scholar 抓取
-│       ├── matching.py      # 匹配分数计算
-│       └── assignment.py    # 分配算法
+│   ├── routers/        # API 路由（auth / papers / reviewers / matches / assignment / conflicts）
+│   ├── services/       # 论文分析 · Scholar 抓取 · 匹配计算 · 分配算法
+│   └── models/         # SQLite schema · Pydantic schemas
 ├── frontend/
-│   ├── src/
-│   │   ├── styles/app.css   # Design tokens（Apple 风格）
-│   │   ├── components/
-│   │   │   ├── ui/          # Button、Badge、Card、Input
-│   │   │   └── layout/      # AppShell、PageHeader、EmptyState
-│   │   └── routes/          # TanStack Router 文件路由
-│   │       ├── login.tsx
-│   │       ├── _app.tsx     # 登录保护布局
-│   │       └── _app/
-│   │           ├── conference.tsx
-│   │           ├── papers.tsx / papers.$id.tsx
-│   │           ├── reviewers.tsx / reviewers.$id.tsx
-│   │           ├── assignment.tsx
-│   │           ├── conflicts.tsx
-│   │           └── my/ (reviewer 视角)
-│   └── vite.config.ts
-└── data/                    # SQLite DB + 上传的 PDF（gitignore）
+│   └── src/
+│       ├── routes/     # 页面（TanStack Router 文件路由）
+│       ├── components/ # UI 组件 · 布局
+│       └── lib/        # API 客户端 · i18n · 认证
+└── scripts/
+    └── seed_demo.py    # 演示数据种子脚本
 ```
-
-## 待接入
-
-- [ ] `services/analysis.py` — 接入 Claude API 读取 PDF 并提取主题
-- [ ] `services/scholar.py` — 接入 scholarly / SerpAPI 抓取真实数据
-- [ ] `services/matching.py` — 用 LLM 生成自然语言匹配理由
-- [ ] HotCRP OAuth 参数 — 需要谢老师提供 client_id / secret
-- [ ] 管理员角色初始化 — 在 `.env` 配置 ADMIN_EMAILS
