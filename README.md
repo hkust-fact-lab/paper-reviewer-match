@@ -4,9 +4,9 @@
 
 ## 演示视频
 
-<video src="https://github.com/hkust-fact-lab/paper-reviewer-match/releases/download/v0.1.0/ReviewMatch-Pre.mov" controls width="100%"></video>
+<video src="https://github.com/hkust-fact-lab/paper-reviewer-match/releases/download/v0.1.0/ReviewMatch-Pre.mp4" controls width="100%"></video>
 
-> 如果视频无法内嵌播放，[点击直接下载观看](https://github.com/hkust-fact-lab/paper-reviewer-match/releases/download/v0.1.0/ReviewMatch-Pre.mov)
+> 如果视频无法内嵌播放，[点击直接下载观看](https://github.com/hkust-fact-lab/paper-reviewer-match/releases/download/v0.1.0/ReviewMatch-Pre.mp4)
 
 ## 功能
 
