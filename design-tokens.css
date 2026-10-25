@@ -1,0 +1,438 @@
+/*
+ * Paper Reviewer Match — Design Tokens
+ *
+ * 设计语言：极简叙事 × 高度统一 × 物理真实感
+ * 参照：Apple HIG / SF Design System
+ *
+ * 三条核心原则：
+ * 1. 克制色彩——内容本身是主角，颜色只传达语义
+ * 2. 层次即深度——用高斯模糊、透明度、精准阴影代替线框分割
+ * 3. 有生命的动效——弹簧曲线、非线性缓动，让界面"有质量感"
+ *
+ * Token 分四层：
+ *   Primitive  →  Semantic  →  Component alias  →  Tailwind @theme
+ */
+
+/* ─────────────────────────────────────────────
+   Layer 0 · Primitive palette
+   不直接在组件里用；只允许 Semantic 层引用
+───────────────────────────────────────────── */
+:root {
+  /* Neutral ramp — Apple 系的灰色有轻微蓝调 */
+  --gray-50:  #f5f5f7;   /* 页面底 */
+  --gray-100: #e8e8ed;
+  --gray-200: #d2d2d7;
+  --gray-300: #b8b8bf;
+  --gray-400: #98989f;
+  --gray-500: #6e6e73;   /* 次级文字 */
+  --gray-600: #48484c;
+  --gray-700: #3a3a3c;
+  --gray-800: #2c2c2e;
+  --gray-900: #1c1c1e;   /* 深色主文字 */
+
+  /* Brand — 学术感蓝靛，接近 Apple Blue 但更沉稳 */
+  --blue-50:  #f0f4ff;
+  --blue-100: #dde6ff;
+  --blue-200: #b8ccff;
+  --blue-400: #5585f5;
+  --blue-500: #2563eb;   /* primary action */
+  --blue-600: #1d4ed8;
+  --blue-700: #1e3fa8;
+
+  /* Semantic status */
+  --green-500: #16a34a;
+  --green-soft: #f0fdf4;
+  --amber-500: #d97706;
+  --amber-soft: #fffbeb;
+  --red-500:   #dc2626;
+  --red-soft:  #fef2f2;
+
+  /* Pure */
+  --white: #ffffff;
+  --black: #000000;
+}
+
+
+/* ─────────────────────────────────────────────
+   Layer 1 · Semantic tokens  (Light mode)
+───────────────────────────────────────────── */
+:root {
+  /* Surfaces — 三层深度，用透明度/模糊区分，不用边框堆叠 */
+  --background:          var(--gray-50);    /* 页面底 */
+  --surface:             var(--white);      /* 卡片、面板 */
+  --surface-raised:      var(--white);      /* 弹出层、tooltip */
+  --surface-overlay:     rgba(255,255,255,0.72); /* 毛玻璃层 */
+  --surface-subtle:      #f9f9fb;           /* 内嵌区域、代码块 */
+  --surface-selected:    var(--blue-50);    /* 选中行 */
+
+  /* Content */
+  --text-primary:        var(--gray-900);
+  --text-secondary:      var(--gray-500);
+  --text-tertiary:       var(--gray-400);
+  --text-on-primary:     var(--white);
+  --text-link:           var(--blue-500);
+
+  /* Actions */
+  --primary:             var(--blue-500);
+  --primary-hover:       var(--blue-600);
+  --primary-active:      var(--blue-700);
+  --primary-foreground:  var(--white);
+
+  /* Borders — 极细，靠阴影建立层次而非粗边框 */
+  --border:              rgba(0,0,0,0.08);
+  --border-strong:       rgba(0,0,0,0.14);
+  --ring:                color-mix(in srgb, var(--blue-500) 40%, transparent);
+
+  /* Status */
+  --success:             var(--green-500);
+  --success-surface:     var(--green-soft);
+  --warning:             var(--amber-500);
+  --warning-surface:     var(--amber-soft);
+  --danger:              var(--red-500);
+  --danger-surface:      var(--red-soft);
+
+  /* ── Shadows — 物理真实感的关键 ──
+     Apple 的阴影有两层：环境光 (ambient) + 直射光 (key)
+     ambient 扩散、半透明；key 偏向、清晰 */
+  --shadow-xs:
+    0 1px 2px rgba(0,0,0,0.04);
+  --shadow-sm:
+    0 1px 3px rgba(0,0,0,0.06),
+    0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md:
+    0 4px 6px rgba(0,0,0,0.05),
+    0 2px 4px rgba(0,0,0,0.04),
+    0 0 0 1px rgba(0,0,0,0.04);
+  --shadow-lg:
+    0 10px 25px rgba(0,0,0,0.07),
+    0 4px  8px  rgba(0,0,0,0.05),
+    0 0   0 1px rgba(0,0,0,0.04);
+  --shadow-xl:
+    0 20px 40px rgba(0,0,0,0.10),
+    0 8px  16px rgba(0,0,0,0.06),
+    0 0   0 1px rgba(0,0,0,0.04);
+
+  /* 浮动卡片专用：轻微彩色环境光，让白色卡片不死板 */
+  --shadow-card:
+    0 2px 8px rgba(37,99,235,0.04),
+    0 1px 3px rgba(0,0,0,0.06),
+    0 0   0 1px rgba(0,0,0,0.05);
+
+  /* ── Shape ── */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius:    10px;   /* 主卡片、按钮：连续曲率 squircle 感 */
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-2xl:28px;   /* 大模态、底抽屉 */
+
+  /* ── Typography ──
+     系统字体栈：SF Pro (macOS/iOS) → Inter → fallback
+     中英混排时 PingFang SC 无缝衔接 */
+  --font-sans:
+    -apple-system, BlinkMacSystemFont,
+    "SF Pro Text", "SF Pro Display",
+    "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei",
+    "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono:
+    ui-monospace, "SF Mono", SFMono-Regular,
+    Menlo, Consolas, "Cascadia Code", monospace;
+
+  --text-xs:   0.6875rem;  /* 11px — 角标、meta */
+  --text-sm:   0.75rem;    /* 12px — 标签、辅助 */
+  --text-base: 0.875rem;   /* 14px — 正文 */
+  --text-md:   1rem;       /* 16px — 输入框、副标题 */
+  --text-lg:   1.125rem;   /* 18px — 卡片标题 */
+  --text-xl:   1.25rem;    /* 20px — 页面标题 */
+  --text-2xl:  1.5rem;     /* 24px */
+  --text-3xl:  1.875rem;   /* 30px — Hero 数字 */
+
+  --leading-tight:  1.25;
+  --leading-snug:   1.4;
+  --leading-normal: 1.6;
+  --leading-relaxed:1.75;
+
+  /* Apple 惯用字重：regular 400 → medium 500 → semibold 600 → bold 700
+     避免使用 300/800/900，感知太轻或太重 */
+  --weight-normal:   400;
+  --weight-medium:   500;
+  --weight-semibold: 600;
+  --weight-bold:     700;
+
+  /* ── Spacing — 8pt grid ── */
+  --space-0-5: 0.125rem;  /* 2px */
+  --space-1:   0.25rem;   /* 4px */
+  --space-1-5: 0.375rem;  /* 6px */
+  --space-2:   0.5rem;    /* 8px */
+  --space-3:   0.75rem;   /* 12px */
+  --space-4:   1rem;      /* 16px */
+  --space-5:   1.25rem;   /* 20px */
+  --space-6:   1.5rem;    /* 24px */
+  --space-8:   2rem;      /* 32px */
+  --space-10:  2.5rem;    /* 40px */
+  --space-12:  3rem;      /* 48px */
+  --space-16:  4rem;      /* 64px */
+
+  /* ── Controls ── */
+  --control-h:    2.25rem;  /* 36px — 常规按钮/输入 */
+  --control-h-sm: 1.875rem; /* 30px — 紧凑 */
+  --control-h-lg: 2.75rem;  /* 44px — 移动端主操作，Apple HIG 最小触控 */
+
+  /* ── Z-index scale ── */
+  --z-base:     0;
+  --z-sticky:   100;
+  --z-dropdown: 200;
+  --z-overlay:  300;
+  --z-modal:    400;
+  --z-toast:    500;
+
+  /* ── Motion — 物理弹簧感 ──
+     Apple 的动效：快速起步、非线性减速、带轻微弹性
+     easing 对应 CSS cubic-bezier 的最佳近似 */
+  --ease-default:  cubic-bezier(0.25, 0.46, 0.45, 0.94);  /* ease-out-quad */
+  --ease-spring:   cubic-bezier(0.34, 1.56, 0.64, 1.00);  /* 弹入，带轻微过冲 */
+  --ease-in:       cubic-bezier(0.55, 0.00, 1.00, 0.45);
+  --ease-smooth:   cubic-bezier(0.16, 1.00, 0.30, 1.00);  /* expo-out，像 iOS 手势释放 */
+
+  --duration-fast:   120ms;   /* hover、ripple */
+  --duration-normal: 220ms;   /* 面板展开、badge 变化 */
+  --duration-slow:   380ms;   /* 模态进出、页面切换 */
+  --duration-spring: 500ms;   /* 弹簧动画总时长 */
+
+  /* Focus ring */
+  --focus-ring-width:  3px;
+  --focus-ring-offset: 2px;
+}
+
+
+/* ─────────────────────────────────────────────
+   Layer 2 · Dark mode
+───────────────────────────────────────────── */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --background:        #0f0f11;
+    --surface:           #1c1c1e;
+    --surface-raised:    #252528;
+    --surface-overlay:   rgba(28,28,30,0.80);
+    --surface-subtle:    #18181a;
+    --surface-selected:  rgba(37,99,235,0.15);
+
+    --text-primary:      #f5f5f7;
+    --text-secondary:    #98989f;
+    --text-tertiary:     #6e6e73;
+    --text-on-primary:   #ffffff;
+    --text-link:         #5585f5;
+
+    --primary:           #5585f5;
+    --primary-hover:     #6b96f7;
+    --primary-active:    #2563eb;
+    --primary-foreground:#0f0f11;
+
+    --border:            rgba(255,255,255,0.08);
+    --border-strong:     rgba(255,255,255,0.14);
+    --ring:              color-mix(in srgb, #5585f5 45%, transparent);
+
+    --success:           #4ade80;
+    --success-surface:   rgba(74,222,128,0.10);
+    --warning:           #fbbf24;
+    --warning-surface:   rgba(251,191,36,0.10);
+    --danger:            #f87171;
+    --danger-surface:    rgba(248,113,113,0.10);
+
+    --shadow-xs:  0 1px 2px rgba(0,0,0,0.30);
+    --shadow-sm:  0 1px 3px rgba(0,0,0,0.40), 0 1px 2px rgba(0,0,0,0.30);
+    --shadow-md:  0 4px 6px rgba(0,0,0,0.35), 0 2px 4px rgba(0,0,0,0.25), 0 0 0 1px rgba(255,255,255,0.05);
+    --shadow-lg:  0 10px 25px rgba(0,0,0,0.45), 0 4px 8px rgba(0,0,0,0.30), 0 0 0 1px rgba(255,255,255,0.05);
+    --shadow-xl:  0 20px 40px rgba(0,0,0,0.55), 0 8px 16px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.05);
+    --shadow-card:0 2px 8px rgba(0,0,0,0.40), 0 1px 3px rgba(0,0,0,0.30), 0 0 0 1px rgba(255,255,255,0.06);
+
+    color-scheme: dark;
+  }
+}
+
+[data-theme='dark'] {
+  --background:        #0f0f11;
+  --surface:           #1c1c1e;
+  --surface-raised:    #252528;
+  --surface-overlay:   rgba(28,28,30,0.80);
+  --surface-subtle:    #18181a;
+  --surface-selected:  rgba(37,99,235,0.15);
+  --text-primary:      #f5f5f7;
+  --text-secondary:    #98989f;
+  --text-tertiary:     #6e6e73;
+  --text-on-primary:   #ffffff;
+  --text-link:         #5585f5;
+  --primary:           #5585f5;
+  --primary-hover:     #6b96f7;
+  --primary-active:    #2563eb;
+  --primary-foreground:#0f0f11;
+  --border:            rgba(255,255,255,0.08);
+  --border-strong:     rgba(255,255,255,0.14);
+  --ring:              color-mix(in srgb, #5585f5 45%, transparent);
+  --success:           #4ade80;
+  --success-surface:   rgba(74,222,128,0.10);
+  --warning:           #fbbf24;
+  --warning-surface:   rgba(251,191,36,0.10);
+  --danger:            #f87171;
+  --danger-surface:    rgba(248,113,113,0.10);
+  --shadow-xs:  0 1px 2px rgba(0,0,0,0.30);
+  --shadow-sm:  0 1px 3px rgba(0,0,0,0.40), 0 1px 2px rgba(0,0,0,0.30);
+  --shadow-md:  0 4px 6px rgba(0,0,0,0.35), 0 2px 4px rgba(0,0,0,0.25), 0 0 0 1px rgba(255,255,255,0.05);
+  --shadow-lg:  0 10px 25px rgba(0,0,0,0.45), 0 4px 8px rgba(0,0,0,0.30), 0 0 0 1px rgba(255,255,255,0.05);
+  --shadow-xl:  0 20px 40px rgba(0,0,0,0.55), 0 8px 16px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.05);
+  --shadow-card:0 2px 8px rgba(0,0,0,0.40), 0 1px 3px rgba(0,0,0,0.30), 0 0 0 1px rgba(255,255,255,0.06);
+  color-scheme: dark;
+}
+
+
+/* ─────────────────────────────────────────────
+   Layer 3 · Tailwind v4 @theme bridge
+   让 bg-surface、shadow-card 等语义类可直接使用
+───────────────────────────────────────────── */
+@theme inline {
+  /* Colors */
+  --color-background:       var(--background);
+  --color-surface:          var(--surface);
+  --color-surface-raised:   var(--surface-raised);
+  --color-surface-subtle:   var(--surface-subtle);
+  --color-surface-selected: var(--surface-selected);
+
+  --color-foreground:       var(--text-primary);
+  --color-muted-foreground: var(--text-secondary);
+  --color-tertiary:         var(--text-tertiary);
+
+  --color-primary:          var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-border:           var(--border);
+  --color-border-strong:    var(--border-strong);
+  --color-ring:             var(--ring);
+
+  --color-success:          var(--success);
+  --color-success-surface:  var(--success-surface);
+  --color-warning:          var(--warning);
+  --color-warning-surface:  var(--warning-surface);
+  --color-danger:           var(--danger);
+  --color-danger-surface:   var(--danger-surface);
+
+  /* Shadows */
+  --shadow-xs:   var(--shadow-xs);
+  --shadow-sm:   var(--shadow-sm);
+  --shadow-md:   var(--shadow-md);
+  --shadow-lg:   var(--shadow-lg);
+  --shadow-xl:   var(--shadow-xl);
+  --shadow-card: var(--shadow-card);
+
+  /* Radii */
+  --radius-xs:  var(--radius-xs);
+  --radius-sm:  var(--radius-sm);
+  --radius-md:  var(--radius);
+  --radius-lg:  var(--radius-lg);
+  --radius-xl:  var(--radius-xl);
+  --radius-2xl: var(--radius-2xl);
+
+  /* Typography */
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+
+  /* Motion */
+  --ease-default: var(--ease-default);
+  --ease-spring:  var(--ease-spring);
+  --ease-smooth:  var(--ease-smooth);
+}
+
+
+/* ─────────────────────────────────────────────
+   Layer 4 · Base reset + global defaults
+───────────────────────────────────────────── */
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+    border-color: var(--border);
+  }
+
+  html {
+    /* 防 iOS 字体缩放 */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);        /* 14px */
+    line-height: var(--leading-normal);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+  }
+
+  /* Focus — Apple 风格：蓝色光晕，不是虚线框 */
+  :focus-visible {
+    outline: var(--focus-ring-width) solid var(--ring);
+    outline-offset: var(--focus-ring-offset);
+    border-radius: var(--radius-sm);
+  }
+
+  /* 尊重用户运动偏好 */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+
+/* ─────────────────────────────────────────────
+   Layer 5 · Motion utilities
+   直接在 className 上用，不需要写内联 style
+───────────────────────────────────────────── */
+@layer utilities {
+  /* 卡片悬停上浮 — 物理感核心 */
+  .hover-lift {
+    transition:
+      transform var(--duration-normal) var(--ease-smooth),
+      box-shadow var(--duration-normal) var(--ease-smooth);
+  }
+  .hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  /* 按钮按压下沉 */
+  .press-down {
+    transition: transform var(--duration-fast) var(--ease-default);
+  }
+  .press-down:active {
+    transform: scale(0.97);
+  }
+
+  /* 弹入出现 — 用于 badge、分数标签 */
+  .anim-spring-in {
+    animation: spring-in var(--duration-spring) var(--ease-spring) both;
+  }
+  @keyframes spring-in {
+    from { opacity: 0; transform: scale(0.88) translateY(4px); }
+    to   { opacity: 1; transform: scale(1)    translateY(0);   }
+  }
+
+  /* 淡入上滑 — 用于卡片列表 stagger */
+  .anim-fade-up {
+    animation: fade-up var(--duration-slow) var(--ease-smooth) both;
+  }
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0);    }
+  }
+
+  /* 毛玻璃 — 用于 sticky 导航、模态背景 */
+  .glass {
+    background: var(--surface-overlay);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+  }
+}

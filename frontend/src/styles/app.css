@@ -1,0 +1,310 @@
+@import 'tailwindcss';
+
+/*
+ * ReviewMatch Design Tokens
+ * 主题：暖黑 × 琥珀金
+ *
+ * 深色（默认）：极深暖黑背景 + 奶白文字 + 琥珀金强调
+ * 浅色（可切换）：暖米白背景 + 深褐文字 + 深金强调
+ *
+ * 设计原则：
+ * - 背景带暖调棕，不用冷中性黑
+ * - 主色只有金色一个，其余全中性
+ * - 边框极细极透明，靠阴影建立层次
+ */
+
+/* ─────────────────────────────────────────────
+   Primitives — 不在组件里直接使用
+───────────────────────────────────────────── */
+:root {
+  /* 暖黑色阶 */
+  --ink-950: #0E0D0B;
+  --ink-900: #141210;
+  --ink-850: #17160F;
+  --ink-800: #1F1D13;
+  --ink-700: #2A2720;
+  --ink-600: #3A362C;
+  --ink-500: #5A5246;
+  --ink-400: #8A8070;
+  --ink-300: #B0A898;
+  --ink-200: #D4CEC4;
+  --ink-100: #EDE8DE;
+  --ink-50:  #F5F1E8;
+
+  /* 琥珀金色阶 */
+  --amber-400: #F0B940;
+  --amber-500: #E8A930;
+  --amber-600: #D49B24;
+  --amber-700: #B8841A;
+  --amber-soft: rgba(232, 169, 48, 0.12);
+  --amber-glow: rgba(232, 169, 48, 0.06);
+
+  /* 状态色（低饱和，融入暖色调） */
+  --teal-400:  #5FAD7A;
+  --teal-soft: rgba(95, 173, 122, 0.12);
+  --rose-400:  #C4574A;
+  --rose-soft: rgba(196, 87, 74, 0.12);
+}
+
+/* ─────────────────────────────────────────────
+   深色模式（默认）
+───────────────────────────────────────────── */
+:root {
+  /* 三层表面 */
+  --background:        var(--ink-950);   /* #0E0D0B 极深暖黑 */
+  --surface:           var(--ink-850);   /* #17160F 卡片 */
+  --surface-raised:    var(--ink-800);   /* #1F1D13 弹出层 */
+  --surface-overlay:   rgba(14,13,11,0.82);
+  --surface-subtle:    var(--ink-900);   /* #141210 内嵌区域 */
+  --surface-selected:  var(--amber-glow);
+
+  /* 文字 — 奶白调，不用纯白 */
+  --text-primary:      var(--ink-100);   /* #EDE8DE */
+  --text-secondary:    var(--ink-400);   /* #8A8070 */
+  --text-tertiary:     var(--ink-500);   /* #5A5246 */
+  --text-on-primary:   var(--ink-950);   /* 金色按钮上的深色文字 */
+  --text-link:         var(--amber-500);
+
+  /* 主色 — 唯一有彩色 */
+  --primary:           var(--amber-500); /* #E8A930 */
+  --primary-hover:     var(--amber-400); /* #F0B940 */
+  --primary-active:    var(--amber-600); /* #D49B24 */
+  --primary-foreground:var(--ink-950);
+
+  /* 边框 — 极细极透明 */
+  --border:            rgba(240,234,214,0.07);
+  --border-strong:     rgba(240,234,214,0.13);
+  --ring:              color-mix(in srgb, var(--amber-500) 50%, transparent);
+
+  /* 状态色 */
+  --success:           var(--teal-400);
+  --success-surface:   var(--teal-soft);
+  --warning:           var(--amber-500);
+  --warning-surface:   var(--amber-soft);
+  --danger:            var(--rose-400);
+  --danger-surface:    var(--rose-soft);
+
+  /* 阴影 — 暖色调，带轻微琥珀光晕 */
+  --shadow-xs:   0 1px 2px rgba(0,0,0,0.40);
+  --shadow-sm:   0 1px 4px rgba(0,0,0,0.50),
+                 0 0 0 1px rgba(240,234,214,0.05);
+  --shadow-md:   0 4px 12px rgba(0,0,0,0.55),
+                 0 1px 3px rgba(0,0,0,0.40),
+                 0 0 0 1px rgba(240,234,214,0.06);
+  --shadow-lg:   0 12px 32px rgba(0,0,0,0.60),
+                 0 4px 8px rgba(0,0,0,0.40),
+                 0 0 0 1px rgba(240,234,214,0.07);
+  --shadow-card: 0 2px 8px rgba(0,0,0,0.50),
+                 0 0 0 1px rgba(240,234,214,0.06),
+                 0 0 20px rgba(232,169,48,0.03); /* 轻微琥珀底光 */
+
+  color-scheme: dark;
+}
+
+/* ─────────────────────────────────────────────
+   浅色模式（[data-theme='light'] 手动触发）
+───────────────────────────────────────────── */
+[data-theme='light'] {
+  --background:        var(--ink-50);    /* #F5F1E8 暖米白 */
+  --surface:           #FFFDF7;          /* 带暖调的纯白 */
+  --surface-raised:    #FFFDF7;
+  --surface-overlay:   rgba(245,241,232,0.88);
+  --surface-subtle:    var(--ink-100);   /* #EDE8DE */
+  --surface-selected:  var(--amber-soft);
+
+  --text-primary:      var(--ink-950);   /* #0E0D0B 几乎纯黑 */
+  --text-secondary:    var(--ink-500);   /* #5A5246 */
+  --text-tertiary:     var(--ink-400);   /* #8A8070 */
+  --text-on-primary:   #FFFDF7;
+  --text-link:         var(--amber-700);
+
+  --primary:           var(--amber-600); /* #D49B24 深金，在白底对比度更好 */
+  --primary-hover:     var(--amber-500);
+  --primary-active:    var(--amber-700);
+  --primary-foreground:#FFFDF7;
+
+  --border:            rgba(14,13,11,0.09);
+  --border-strong:     rgba(14,13,11,0.16);
+  --ring:              color-mix(in srgb, var(--amber-600) 45%, transparent);
+
+  --success:           #3D8B5A;
+  --success-surface:   rgba(61,139,90,0.10);
+  --warning:           var(--amber-600);
+  --warning-surface:   var(--amber-soft);
+  --danger:            #B04035;
+  --danger-surface:    rgba(176,64,53,0.10);
+
+  --shadow-xs:   0 1px 2px rgba(14,13,11,0.06);
+  --shadow-sm:   0 1px 3px rgba(14,13,11,0.08),
+                 0 0 0 1px rgba(14,13,11,0.05);
+  --shadow-md:   0 4px 10px rgba(14,13,11,0.09),
+                 0 1px 3px rgba(14,13,11,0.06),
+                 0 0 0 1px rgba(14,13,11,0.05);
+  --shadow-lg:   0 10px 28px rgba(14,13,11,0.11),
+                 0 4px 8px rgba(14,13,11,0.07),
+                 0 0 0 1px rgba(14,13,11,0.05);
+  --shadow-card: 0 2px 8px rgba(14,13,11,0.08),
+                 0 0 0 1px rgba(14,13,11,0.06),
+                 0 0 20px rgba(232,169,48,0.04);
+
+  color-scheme: light;
+}
+
+/* ─────────────────────────────────────────────
+   Shape & Motion & Typography tokens
+───────────────────────────────────────────── */
+:root {
+  --radius-xs:  4px;
+  --radius-sm:  6px;
+  --radius:     10px;
+  --radius-lg:  14px;
+  --radius-xl:  20px;
+  --radius-2xl: 28px;
+
+  --font-sans:
+    -apple-system, BlinkMacSystemFont,
+    "SF Pro Text", "SF Pro Display",
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+    "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono:
+    ui-monospace, "SF Mono", SFMono-Regular,
+    Menlo, Consolas, monospace;
+
+  --ease-default: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-spring:  cubic-bezier(0.34, 1.56, 0.64, 1.00);
+  --ease-smooth:  cubic-bezier(0.16, 1.00, 0.30, 1.00);
+
+  --duration-fast:   120ms;
+  --duration-normal: 220ms;
+  --duration-slow:   380ms;
+  --duration-spring: 500ms;
+
+  --sidebar-width: 220px;
+  --topbar-height: 56px;
+}
+
+/* ─────────────────────────────────────────────
+   Tailwind v4 @theme bridge
+───────────────────────────────────────────── */
+@theme inline {
+  --color-background:        var(--background);
+  --color-surface:           var(--surface);
+  --color-surface-raised:    var(--surface-raised);
+  --color-surface-subtle:    var(--surface-subtle);
+  --color-surface-selected:  var(--surface-selected);
+  --color-foreground:        var(--text-primary);
+  --color-muted-foreground:  var(--text-secondary);
+  --color-tertiary:          var(--text-tertiary);
+  --color-primary:           var(--primary);
+  --color-primary-foreground:var(--primary-foreground);
+  --color-border:            var(--border);
+  --color-border-strong:     var(--border-strong);
+  --color-ring:              var(--ring);
+  --color-success:           var(--success);
+  --color-success-surface:   var(--success-surface);
+  --color-warning:           var(--warning);
+  --color-warning-surface:   var(--warning-surface);
+  --color-danger:            var(--danger);
+  --color-danger-surface:    var(--danger-surface);
+  --shadow-xs:               var(--shadow-xs);
+  --shadow-sm:               var(--shadow-sm);
+  --shadow-md:               var(--shadow-md);
+  --shadow-lg:               var(--shadow-lg);
+  --shadow-card:             var(--shadow-card);
+  --radius-xs:               var(--radius-xs);
+  --radius-sm:               var(--radius-sm);
+  --radius-md:               var(--radius);
+  --radius-lg:               var(--radius-lg);
+  --radius-xl:               var(--radius-xl);
+  --radius-2xl:              var(--radius-2xl);
+  --font-sans:               var(--font-sans);
+  --font-mono:               var(--font-mono);
+}
+
+/* ─────────────────────────────────────────────
+   Base reset
+───────────────────────────────────────────── */
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+    border-color: var(--border);
+  }
+  html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+  body {
+    background-color: var(--background);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+  /* 滚动条暖色调 */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: var(--ink-600);
+    border-radius: 99px;
+  }
+  ::-webkit-scrollbar-thumb:hover { background: var(--ink-500); }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* ─────────────────────────────────────────────
+   Motion utilities
+───────────────────────────────────────────── */
+@layer utilities {
+  .hover-lift {
+    transition: transform var(--duration-normal) var(--ease-smooth),
+                box-shadow var(--duration-normal) var(--ease-smooth);
+  }
+  .hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .press-down {
+    transition: transform var(--duration-fast) var(--ease-default);
+  }
+  .press-down:active { transform: scale(0.97); }
+
+  .anim-spring-in {
+    animation: spring-in var(--duration-spring) var(--ease-spring) both;
+  }
+  @keyframes spring-in {
+    from { opacity: 0; transform: scale(0.88) translateY(4px); }
+    to   { opacity: 1; transform: scale(1)    translateY(0);   }
+  }
+
+  .anim-fade-up {
+    animation: fade-up var(--duration-slow) var(--ease-smooth) both;
+  }
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0);    }
+  }
+
+  /* 毛玻璃 — 用于 topbar */
+  .glass {
+    background: var(--surface-overlay);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+  }
+
+  /* 琥珀金光晕 — 用于 primary badge、选中状态 */
+  .amber-glow {
+    box-shadow: 0 0 0 1px rgba(232,169,48,0.30),
+                0 0 8px rgba(232,169,48,0.15);
+  }
+}
