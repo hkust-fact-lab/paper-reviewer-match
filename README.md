@@ -49,7 +49,7 @@ cp .env.example .env
 ./dev.sh
 ```
 
-浏览器打开 `http://localhost:8000`，默认账号 `admin` / `admin123`。
+浏览器打开 `http://localhost:8000`，使用 `.env` 中配置的管理员账号登录。
 
 ### 插入演示数据
 
